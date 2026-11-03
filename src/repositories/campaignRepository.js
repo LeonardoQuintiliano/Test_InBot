@@ -32,7 +32,7 @@ module.exports = {
         return campaigns.find(c => c.id === id || null);
     },
 
-    async getContactsById(id) {
-        return contacts.filter(c => c.id === id);
+    async getContactsById(campaignId) {
+        return contacts.filter(c => c.campaignId === campaignId);
     }
-}
+};
