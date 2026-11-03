@@ -22,7 +22,9 @@ module.exports = {
           campaignId,
           phone: c.phone,
           variables: c.variables || {},
-          status: 'pending' 
+          status: 'pending',
+          providerMessageId: null,
+          failReason: null 
         }));
         contacts.push(...formattedContacts);
         return formattedContacts;
@@ -34,5 +36,9 @@ module.exports = {
 
     async getContactsById(campaignId) {
         return contacts.filter(c => c.campaignId === campaignId);
+    },
+
+    async getContactByProviderMessageId(providerMessageId) {
+        return contacts.find(c => c.providerMessageId === providerMessageId) || null;
     }
 };
