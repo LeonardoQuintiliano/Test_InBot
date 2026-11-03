@@ -36,6 +36,8 @@ module.exports = {
               }
             }
 
+            console.log(`Enviando campanha para ${contact.phone} | Mensagem: ${messageBody}`);
+
             const result = await sendMessage({
               to: contact.phone,
               body: messageBody
@@ -44,7 +46,10 @@ module.exports = {
             contact.status = 'sent';
             contact.providerMessageId = result.providerMessageId;
 
+            console.log(`Mensagem enviada com sucesso Provider ID: ${result.providerMessageId}`);
+
           } catch (error) {
+            console.log(`Erro ao enviar para ${contact.phone}:`, error.message);
             if (error.status === 400) {
               contact.status = 'failed';
               contact.failReason = error.message;

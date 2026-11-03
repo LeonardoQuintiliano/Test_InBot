@@ -11,11 +11,17 @@ const statusHierarchy = {
 };
 
 module.exports = {
-    async processWebhook(data) {
-        const { event_id, provider_message_id, status } = data;
+    async processWebhook(data) {  
+      const { event_id, provider_message_id, status } = data;
+      console.log(`Evento: ${event_id} | Msg ID: ${provider_message_id} | Status: ${status}`);
 
         if (processedEvents.has(event_id)) {
             return { message: 'Evento duplicado já processado anteriormente' };
+        }
+
+        const validStatus = ['delivered', 'read', 'failed'];
+        if (!validStatus.includes(status)) {
+          throw new Error('Status de webhook inválido');
         }
 
         const contact = await campaignRepository.getContactByProviderMessageId(provider_message_id);
