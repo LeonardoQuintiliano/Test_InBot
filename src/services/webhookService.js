@@ -13,7 +13,7 @@ const statusHierarchy = {
 module.exports = {
     async processWebhook(data) {  
       const { event_id, provider_message_id, status } = data;
-      console.log(`Evento: ${event_id} | Msg ID: ${provider_message_id} | Status: ${status}`);
+      console.log(`[WEBHOOK] Evento: ${event_id} | Msg ID: ${provider_message_id} | Status: ${status}`);
 
         if (processedEvents.has(event_id)) {
             return { message: 'Evento duplicado já processado anteriormente' };
@@ -33,8 +33,11 @@ module.exports = {
         const currentWeight = statusHierarchy[contact.status] || 0;
         const incomingWeight = statusHierarchy[status] || 0;
 
+        let finalStatus = contact.status;
+
         if (incomingWeight >= currentWeight || status === 'failed') {
-          contact.status = status;
+            finalStatus = status;
+            await campaignRepository.updateContactStatus(contact.id, finalStatus);
         }
 
         processedEvents.add(event_id);
@@ -42,7 +45,7 @@ module.exports = {
         return { 
           message: 'Webhook processado com sucesso', 
           contactId: contact.id, 
-          currentStatus: contact.status 
+          currentStatus: finalStatus 
         };
     }
 };
